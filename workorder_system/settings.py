@@ -1,10 +1,23 @@
 from pathlib import Path
+import dj_database_url
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = "django-dev-secret-key-change-in-production"
-DEBUG = True
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]
+
+# archivos staticos
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STOREGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# WhiteNoiseMiddleware proteccion middleware
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+
+db_url = os.environ.get("DATABESE_url")
+if db_url:
+    DATABASES["default"] = dj_database_url.config(default=db_url)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
