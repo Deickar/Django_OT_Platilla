@@ -1,0 +1,180 @@
+<!-- Plantilla HTML para generar PDF de Orden de Trabajo -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <!-- Metadatos del documento -->
+  <meta charset="UTF-8">
+  
+  <!-- Estilos CSS para el diseño del PDF -->
+  <style>
+    /* Estilos base y reset */
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    body { 
+      font-family: Arial, sans-serif; 
+      font-size: 13px; 
+      color: #333; 
+    }
+
+    /* Estilos del encabezado */
+    .header { 
+      background: #0d6efd; 
+      color: white; 
+      padding: 24px 32px; 
+    }
+    
+    .header h1 { 
+      font-size: 22px; 
+    }
+    
+    .header p {  
+      font-size: 12px; 
+      opacity: 0.8; 
+      margin-top: 4px; 
+    }
+
+    /* Contenedor principal */
+    .content { 
+      padding: 32px; 
+    }
+
+    /* Estilos para badges de estado y prioridad */
+    .badge {
+      display: inline-block; 
+      padding: 4px 10px;
+      border-radius: 20px; 
+      font-size: 11px; 
+      font-weight: bold;
+    }
+    
+    /* Colores para badges de estado */
+    .badge-pendiente  { background: #ffc107; color: #000; }
+    .badge-proceso    { background: #0dcaf0; color: #000; }
+    .badge-completada { background: #198754; color: #fff; }
+    .badge-cancelada  { background: #6c757d; color: #fff; }
+    
+    /* Colores para badges de prioridad */
+    .badge-alta   { background: #dc3545; color: #fff; }
+    .badge-media  { background: #ffc107; color: #000; }
+    .badge-baja   { background: #198754; color: #fff; }
+
+    /* Grid para información de la orden */
+    .info-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 16px; 
+      margin-bottom: 24px; 
+    }
+    
+    .info-box { 
+      background: #f8f9fa; 
+      border-radius: 8px; 
+      padding: 16px; 
+    }
+    
+    .info-box label { 
+      font-size: 11px; 
+      color: #888; 
+      display: block; 
+      margin-bottom: 4px; 
+    }
+    
+    .info-box span {  
+      font-weight: bold; 
+      font-size: 14px; 
+    }
+
+    /* Estilos para sección de descripción */
+    .descripcion { 
+      background: #f8f9fa; 
+      border-radius: 8px; 
+      padding: 16px; 
+    }
+    
+    .descripcion label { 
+      font-size: 11px; 
+      color: #888; 
+      display: block; 
+      margin-bottom: 8px; 
+    }
+
+    /* Estilos del pie de página */
+    .footer { 
+      margin-top: 40px; 
+      border-top: 1px solid #dee2e6; 
+      padding-top: 12px;
+      font-size: 10px; 
+      color: #aaa; 
+      text-align: center; 
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Encabezado del documento -->
+  <div class="header">
+    <h1>Orden de Trabajo — {{ orden.code }}</h1>
+    <p>Generado el {% now "d/m/Y H:i" %}</p>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="content">
+
+    <!-- Grid con información básica de la orden -->
+    <div class="info-grid">
+      <!-- Título de la orden -->
+      <div class="info-box">
+        <label>Título</label>
+        <span>{{ orden.title }}</span>
+      </div>
+      
+      <!-- Estado de la orden -->
+      <div class="info-box">
+        <label>Estado</label>
+        <span class="badge badge-{{ orden.status|lower }}">{{ orden.get_status_display }}</span>
+      </div>
+      
+      <!-- Prioridad de la orden -->
+      <div class="info-box">
+        <label>Prioridad</label>
+        <span class="badge badge-{{ orden.priority|lower }}">{{ orden.get_priority_display }}</span>
+      </div>
+      
+      <!-- Persona asignada -->
+      <div class="info-box">
+        <label>Asignado a</label>
+        <span>{{ orden.assigned_to.get_full_name|default:"—" }}</span>
+      </div>
+      
+      <!-- Creador de la orden -->
+      <div class="info-box">
+        <label>Creado por</label>
+        <span>{{ orden.created_by.username }}</span>
+      </div>
+      
+      <!-- Fecha límite -->
+      <div class="info-box">
+        <label>Fecha límite</label>
+        <span>{{ orden.due_date|date:"d/m/Y"|default:"—" }}</span>
+      </div>
+    </div>
+
+    <!-- Sección de descripción -->
+    <div class="descripcion">
+      <label>Descripción</label>
+      <p>{{ orden.description }}</p>
+    </div>
+
+    <!-- Pie de página -->
+    <div class="footer">
+      Sistema de Órdenes de Trabajo — Documento generado automáticamente
+    </div>
+
+  </div>
+
+</body>
+</html>
