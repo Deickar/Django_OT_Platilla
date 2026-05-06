@@ -1,5 +1,5 @@
 import os
-import django 
+import django
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'workorder_system.settings')
 django.setup()
