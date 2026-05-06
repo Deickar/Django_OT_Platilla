@@ -8,17 +8,6 @@ SECRET_KEY = "django-dev-secret-key-change-in-production"
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 ALLOWED_HOSTS = ["*"]
 
-# archivos staticos
-STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STOREGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-# WhiteNoiseMiddleware proteccion middleware
-MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-
-db_url = os.environ.get("DATABESE_url")
-if db_url:
-    DATABASES["default"] = dj_database_url.config(default=db_url)
-
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -32,6 +21,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # aquí directo
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -67,6 +57,11 @@ DATABASES = {
     }
 }
 
+# Base de datos en producción
+db_url = os.environ.get("DATABASE_URL")
+if db_url:
+    DATABASES["default"] = dj_database_url.config(default=db_url)
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
@@ -83,6 +78,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 LOGIN_URL = "/accounts/login/"
 LOGIN_REDIRECT_URL = "/"
