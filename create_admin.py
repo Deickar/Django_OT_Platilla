@@ -2,12 +2,12 @@ import os
 import django 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'workorder_system.settings')
+django.setup()
 
-from django.contib.filter.auth.models.import User
+from django.contrib.auth.models import User
 
-if not User.object.filter(username="admin").exist():
-    User.object.create_superuser("admin', 'admin@demo.com', 'admin1234")
+if not User.objects.filter(username="admin").exists():
+    User.objects.create_superuser('admin', 'admin@demo.com', 'admin1234')
     print("usuario creado exitosamente")
 else:
     print("ya existe")
-
